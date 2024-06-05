@@ -1,37 +1,34 @@
 import random
 import app
+from Scores.score import add_score
 
 
 def generate_number(difficulty):
-    global snumber
-    snumber = random.randrange(0, int(difficulty))
+    return random.randrange(0, int(difficulty) + 1)
 
 
-def get_guess_from_user(difficulty):
-    global user_guess
-    user_guess = input("Enter a guess between 0 and " + difficulty + "\n"
-                       "or type '*' to go back\n")
+def get_guess_from_user(difficulty, snumber):
+    user_guess = input(f'Enter a guess between 0 and {difficulty} \n'
+                       'or type "*" to go back\n')
     if user_guess == '*':
         app.start_play()
-        return user_guess
+        return user_guess, None
     else:
-        compare_results()
-        if result is True:
-            return True
-        else:
-            return False
+        return user_guess, compare_results(difficulty, snumber, user_guess)
 
 
-def compare_results():
-    global result
+def compare_results(difficulty, snumber, user_guess):
     if int(snumber) == int(user_guess):
+        add_score(difficulty)
         print("Success")
-        result = True
+        return True
     else:
         print("Incorrect")
-        result = False
+        return False
 
 
 def play(difficulty):
-    generate_number(difficulty)
-    get_guess_from_user(difficulty)
+    snumber = generate_number(difficulty)
+    user_guess, result = get_guess_from_user(difficulty, snumber)
+    if result is not None:
+        return result
